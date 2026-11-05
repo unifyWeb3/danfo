@@ -1,0 +1,85 @@
+:root {
+  color-scheme: dark;
+  --dusk-top: #150a24;
+  --dusk-mid: #6d2457;
+  --dusk-low: #d4573c;
+  --dusk-glow: #ff9a3c;
+  font-family: "Archivo", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--dusk-top);
+}
+
+body {
+  /* Themed dusk-Lagos backdrop: never black bars on any viewport. */
+  background:
+    radial-gradient(120% 70% at 50% 6%, rgba(255, 154, 60, 0.55) 0%, rgba(255, 154, 60, 0) 55%),
+    radial-gradient(90% 60% at 12% 100%, rgba(255, 92, 122, 0.35) 0%, rgba(255, 92, 122, 0) 60%),
+    radial-gradient(90% 60% at 88% 100%, rgba(96, 52, 214, 0.45) 0%, rgba(96, 52, 214, 0) 60%),
+    linear-gradient(180deg, var(--dusk-top) 0%, var(--dusk-mid) 42%, var(--dusk-low) 74%, var(--dusk-glow) 100%);
+}
+
+#game {
+  position: fixed;
+  inset: 0;
+  /* Phaser's ScaleManager centres the canvas itself (absolute + margins). */
+  /* keep the canvas clear of iOS home indicators */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+#game canvas {
+  display: block;
+  border-radius: 20px;
+  box-shadow:
+    0 0 0 1px rgba(255, 214, 170, 0.18),
+    0 24px 70px rgba(0, 0, 0, 0.55),
+    0 4px 18px rgba(0, 0, 0, 0.4);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Desktop only: frame the centred portrait game with a little Lagos signage. */
+@media (min-width: 900px) {
+  #game::before {
+    content: "DANFO";
+    position: absolute;
+    left: max(4vw, 40px);
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: "Archivo Black", "Arial Black", Impact, system-ui, sans-serif;
+    font-size: clamp(48px, 7vw, 118px);
+    letter-spacing: 0.06em;
+    line-height: 0.86;
+    color: rgba(255, 226, 186, 0.16);
+    text-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    text-align: left;
+  }
+
+  #game::after {
+    content: "you are the conductor, not the driver";
+    position: absolute;
+    right: max(4vw, 40px);
+    bottom: 12vh;
+    font-size: clamp(11px, 1.1vw, 15px);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: rgba(255, 226, 186, 0.42);
+    pointer-events: none;
+  }
+}
