@@ -6,14 +6,34 @@
 export const W = 390
 export const H = 844
 
+/**
+ * Device pixel ratio (capped at 2). The canvas is rendered at W*DPR x H*DPR
+ * and every camera zooms by DPR, so the logical game space stays 390x844 while
+ * sprites and text land on real device pixels.
+ */
+export const DPR = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 2)
+
+/** Sprites are rasterised at RASTER x their design size. */
+export const RASTER = 2
+
+/**
+ * Sprite draw scale: a sprite's world size is (texture pixels x scale), and the
+ * textures are rasterised at RASTER x their design size, so this converts a
+ * design size into the scale needed to draw it at that size.
+ */
+export const TEX_SCALE = 1 / RASTER
+
 /* ---------- pseudo-3D road ---------- */
 export const HORIZON_Y = 300
 export const BUS_Y = 664
 /** How far ahead (in road units) objects spawn at the horizon. */
 export const Z_MAX = 2.2
 /** Half width of the road at the horizon / at the bottom of the screen. */
-export const ROAD_TOP_HALF = 56
-export const ROAD_BOT_HALF = 138
+export const ROAD_TOP_HALF = 46
+export const ROAD_BOT_HALF = 112
+
+/** Visual scale of the danfo relative to its artwork (keeps the edge lanes clear). */
+export const BUS_SCALE = 0.78
 
 export const LANE_COUNT = 3
 

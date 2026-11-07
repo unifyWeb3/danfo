@@ -2,7 +2,9 @@ import Phaser from 'phaser'
 import { FONT_DISPLAY, FONT_UI, H, W } from '../config'
 import { bus, EV } from '../game/bus'
 import { formatNaira } from '../game/routes'
+import { textStyle } from '../game/text'
 import { GameScene } from './GameScene'
+import { setupCamera } from '../game/camera'
 
 /**
  * HUD runs as its own scene so camera shake never rattles the numbers.
@@ -24,32 +26,34 @@ export class HudScene extends Phaser.Scene {
   }
 
   create(): void {
+    setupCamera(this)
+
     this.flashRect = this.add.rectangle(0, 0, W, H, 0xff2b2b, 0).setOrigin(0).setDepth(0)
 
     this.add
-      .text(18, 8, 'CASH', { fontFamily: FONT_UI, fontSize: '11px', color: '#ffd9a0' })
+      .text(18, 8, 'CASH', textStyle({ fontFamily: FONT_UI, fontSize: '11px', color: '#ffd9a0' }))
       .setAlpha(0.85)
       .setDepth(2)
 
     this.cashText = this.add
-      .text(18, 20, '₦0', { fontFamily: FONT_DISPLAY, fontSize: '34px', color: '#ffd35c' })
+      .text(18, 20, '₦0', textStyle({ fontFamily: FONT_DISPLAY, fontSize: '34px', color: '#ffd35c' }))
       .setDepth(2)
       .setShadow(0, 4, '#000000', 8, false, true)
 
     this.paxTag = this.add
-      .text(W - 18, 8, 'ON BOARD', { fontFamily: FONT_UI, fontSize: '11px', color: '#ffd9a0' })
+      .text(W - 18, 8, 'ON BOARD', textStyle({ fontFamily: FONT_UI, fontSize: '11px', color: '#ffd9a0' }))
       .setOrigin(1, 0)
       .setAlpha(0.85)
       .setDepth(2)
 
     this.paxText = this.add
-      .text(W - 18, 20, '0/6', { fontFamily: FONT_DISPLAY, fontSize: '34px', color: '#ffffff' })
+      .text(W - 18, 20, '0/6', textStyle({ fontFamily: FONT_DISPLAY, fontSize: '34px', color: '#ffffff' }))
       .setOrigin(1, 0)
       .setDepth(2)
       .setShadow(0, 4, '#000000', 8, false, true)
 
     this.add
-      .text(W / 2, 6, 'LASTMA', { fontFamily: FONT_UI, fontSize: '10px', color: '#ffd9a0' })
+      .text(W / 2, 6, 'LASTMA', textStyle({ fontFamily: FONT_UI, fontSize: '10px', color: '#ffd9a0' }))
       .setOrigin(0.5, 0)
       .setAlpha(0.85)
       .setDepth(2)
@@ -63,13 +67,13 @@ export class HudScene extends Phaser.Scene {
     this.warnBanner = this.buildWarnBanner().setVisible(false).setDepth(4)
 
     this.calloutText = this.add
-      .text(W / 2, 400, '', {
+      .text(W / 2, 400, '', textStyle({
         fontFamily: FONT_DISPLAY,
         fontSize: '34px',
         color: '#ffffff',
         stroke: '#1a0f2e',
         strokeThickness: 8,
-      })
+      }))
       .setOrigin(0.5)
       .setDepth(5)
       .setAlpha(0)
@@ -128,7 +132,7 @@ export class HudScene extends Phaser.Scene {
     const c = this.add.container(W / 2, 96)
     const bg = this.add.rectangle(0, 0, W - 40, 46, 0xd32020, 0.92).setStrokeStyle(2, 0xffd35c, 0.9)
     const label = this.add
-      .text(0, 0, 'LASTMA AHEAD!', { fontFamily: FONT_DISPLAY, fontSize: '26px', color: '#ffffff' })
+      .text(0, 0, 'LASTMA AHEAD!', textStyle({ fontFamily: FONT_DISPLAY, fontSize: '26px', color: '#ffffff' }))
       .setOrigin(0.5)
     c.add([bg, label])
     this.tweens.add({
@@ -148,12 +152,11 @@ export class HudScene extends Phaser.Scene {
     horn.fillStyle(0xffd35c, 1)
     horn.fillTriangle(-16, -8, -2, -13, -2, 13)
     horn.fillRect(-16, -8, 14, 16)
-    horn.fillRect(-2, -5, 14, 10)
     horn.lineStyle(2.5, 0xffd35c, 0.9)
     horn.strokeCircle(20, 0, 7)
     horn.strokeCircle(20, 0, 13)
     const label = this.add
-      .text(0, 26, 'HORN', { fontFamily: FONT_UI, fontSize: '10px', color: '#ffd9a0' })
+      .text(0, 26, 'HORN', textStyle({ fontFamily: FONT_UI, fontSize: '10px', color: '#ffd9a0' }))
       .setOrigin(0.5)
     c.add([disc, horn, label])
     c.setSize(88, 88).setInteractive({ useHandCursor: true })
@@ -167,7 +170,7 @@ export class HudScene extends Phaser.Scene {
     const c = this.add.container(56, H - 54).setDepth(6)
     const bg = this.add.rectangle(0, 0, 96, 46, 0x1d7a4d, 0.95).setStrokeStyle(2.5, 0x9ff0be, 0.9)
     this.cashOutLabel = this.add
-      .text(0, 0, 'CASH OUT', { fontFamily: FONT_DISPLAY, fontSize: '14px', color: '#ffffff' })
+      .text(0, 0, 'CASH OUT', textStyle({ fontFamily: FONT_DISPLAY, fontSize: '14px', color: '#ffffff' }))
       .setOrigin(0.5)
     c.add([bg, this.cashOutLabel])
     c.setSize(110, 60).setInteractive({ useHandCursor: true })

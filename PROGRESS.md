@@ -14,8 +14,8 @@ appears. Greed vs. the fine.*
 |---|---|---|---|
 | 0 | Scaffold: Phaser 3, Phaser scenes, pseudo-3D road, input, git init | done | `chore: scaffold danfo` |
 | 1 | Core loop + scaling verified by screenshot | done | `feat: core loop and scaling` |
-| 2 | Art pass — hand-authored SVG sprite set, parallax, dusk→night | pending | |
-| 3 | Traffic + LASTMA checkpoints + strikes | pending | |
+| 2 | Art pass — hand-authored SVG sprite set, parallax, dusk→night | done | `feat: hand-authored svg art pass` |
+| 3 | Traffic + LASTMA checkpoints + strikes | done | `feat: traffic, potholes and lastma checkpoints` |
 | 4 | Juice + WebAudio (horn, engine, coins) | pending | |
 | 5 | PWA + shareable end card + localStorage best | pending | |
 | 6 | Deploy to Vercel + verify live URL on a phone viewport | pending | |
@@ -45,4 +45,18 @@ appears. Greed vs. the fine.*
   `shots/step1-core/step1-mobile.png`, `shots/step1-core/step1-desktop.png`.
 - Mobile canvas = 390×844, fills the viewport height exactly. Desktop canvas = 333×720,
   centred on a dusk-Lagos CSS backdrop — no black bars.
-- Zero console errors on both viewports.
+
+### Step 2 — art pass
+- 24 hand-authored SVG sprite definitions (`src/art/svg.ts`, `src/art/svgCity.ts`),
+  rasterised at 2x and drawn at half scale; no image files anywhere.
+- Parallax: sky gradient (dusk→night over the run) + stars + skyline tile + road with
+  perspective lane dashes + pseudo-3D roadside buildings and billboards.
+- 390×844 mobile fills the viewport height; 1366×720 desktop centres on the backdrop.
+- Zero console errors.
+- `shots/step2-art/` — gameplay, overload (hanging passenger), LASTMA warning, title, end card.
+
+### Step 3 — traffic + checkpoints
+- Okada (lane-splitting), truck (wide, hard to pass), pothole (slow + jolt).
+- LASTMA gate every 25–35s, banner 3s ahead, fine + strike + shake when over capacity,
+  3 strikes ends the run.
+- `shots/step2-art/step2-lastma-mobile.png` shows the warning banner and the approaching gate.
