@@ -17,7 +17,7 @@ appears. Greed vs. the fine.*
 | 2 | Art pass — hand-authored SVG sprite set, parallax, dusk→night | done | `feat: hand-authored svg art pass` |
 | 3 | Traffic + LASTMA checkpoints + strikes | done | `feat: traffic, potholes and lastma checkpoints` |
 | 4 | Juice + WebAudio (horn, engine, coins) | done | `feat: webaudio synth, engine pitch, horn` |
-| 5 | PWA + shareable end card + localStorage best | pending | |
+| 5 | PWA + shareable end card + localStorage best | done | `feat: pwa, offline, shareable end card` |
 | 6 | Deploy to Vercel + verify live URL on a phone viewport | pending | |
 | 7 | README (how-to + Now/Next/Later), gameplay clip, X post, jam submission | pending | |
 
@@ -68,3 +68,13 @@ appears. Greed vs. the fine.*
 - Engine: unlocked on the title tap (user gesture); pitch drops as the bus fills up
   and the chug rate follows speed.
 - `LAST CHANCE O!` callout when the conductor boards beyond capacity.
+
+### Step 5 — PWA + end card
+- vite-plugin-pwa 2.0.0 (generateSW): service worker precaches the whole app,
+  `workbox.navigateFallback` + autoUpdate so it installs and runs fully offline.
+- Install manifest: DANFO icon set (192/512 + maskable) generated with Playwright.
+- localStorage best score in try/catch (`danfo.best.v1`, `danfo.runs.v1`).
+- End card now shows the tier title, naira total, route (`Ojuelegba → Mile 2`),
+  NEW BEST badge, strikes and a SHARE button (Web Share API, clipboard fallback).
+- Verified offline: `npm run preview` + headless check — SW registered, reload
+  while offline still boots the game.
