@@ -1,8 +1,7 @@
 # DANFO — build log
 
-Jam: **Loadout AI Game Competition** — deadline **Nov 6 2026, 15:00 UTC**.
-Stack: Vite + TypeScript + Phaser 3. No backend, no art files — every sprite is hand-authored
-SVG in code, every sound is WebAudio synthesis.
+Jam: **Loadout AI Game Competition** — deadline **Nov 6 2026, 15:00 UTC** (passed; today is Nov 7).
+Stack: Vite + TypeScript + Phaser 3. No backend, no art or audio files.
 
 Pitch: *You are the conductor of a Lagos danfo, not the driver. The bus drives itself.
 You hang out the door and squeeze in one more fare every stop — until LASTMA's checkpoint
@@ -12,69 +11,60 @@ appears. Greed vs. the fine.*
 
 | # | Step | State | Commit |
 |---|---|---|---|
-| 0 | Scaffold: Phaser 3, Phaser scenes, pseudo-3D road, input, git init | done | `chore: scaffold danfo` |
-| 1 | Core loop + scaling verified by screenshot | done | `feat: core loop and scaling` |
-| 2 | Art pass — hand-authored SVG sprite set, parallax, dusk→night | done | `feat: hand-authored svg art pass` |
-| 3 | Traffic + LASTMA checkpoints + strikes | done | `feat: traffic, potholes and lastma checkpoints` |
-| 4 | Juice + WebAudio (horn, engine, coins) | done | `feat: webaudio synth, engine pitch, horn` |
-| 5 | PWA + shareable end card + localStorage best | done | `feat: pwa, offline, shareable end card` |
-| 6 | Deploy to Vercel + verify live URL on a phone viewport | pending | |
-| 7 | README (how-to + Now/Next/Later), gameplay clip, X post, jam submission | pending | |
+| 1 | Core loop + scaling verified by screenshot | done | `517caca` |
+| 2 | Art pass — hand-authored SVG sprite set, parallax, dusk→night | done | `059309f` |
+| 3 | Traffic + LASTMA checkpoints + strikes | done | `059309f` |
+| 4 | Juice + WebAudio (horn, engine, coins) | done | `4b2b4f1` |
+| 5 | PWA + shareable end card + localStorage best | done | `cb7db80` |
+| 6 | Deploy to Vercel, live URL verified on a phone viewport | done | `efd6b80`, `f2aace9` |
+| 7 | README + submission pack + gameplay clip | done (X/form blocked) | `f2aace9` + this commit |
 
-## Controls (fixed)
+## Live
 
-- Bus auto-drives forward. **Swipe left/right** (or **←/→**) changes lane.
-- **Tap a stop** (or **Space**) to board its waiting passengers. The bus pulls over by itself.
-- **H** or the horn button honks.
-- Passenger destinations are stops further down the road; they alight and pay automatically.
+- **https://danfo-oxunify.vercel.app** — public, no login, canvas fills the phone viewport.
+  Vercel project `danfo` (prj_bdcAd770xkTRK0DDSbPRMQ1V86Ln), production branch `master`,
+  SSO protection disabled to match the wick project (public game link, as the jam requires).
+- **https://github.com/unifyWeb3/danfo** — public source.
+- `npm run preview` → the PWA is precached and reloads fully offline (verified with
+  `context.setOffline(true)` + reload, canvas and all).
 
-## Rules implemented
+## Verification (headless Chromium, 390×844 + 1366×720)
 
-- Capacity 6 seats. Above 6 = overload: bus bulges, 1–3 passengers hang out of the door,
-  handling goes sluggish, and every passenger above 6 pays a **2× tip** on alighting.
-- LASTMA checkpoint every 25–35s with a **3 second warning banner**. Passing over capacity =
-  **₦1,000 fine + a strike + screen shake**. 3 strikes ends the run.
-- Fares: **₦50** on boarding (`Oya enter!`), **₦100 + tip** on alighting (`Drop! Drop!`).
-- Cash-out button unlocks at 40s so a healthy run lands in the 40–75s band.
+- `npm run build` clean. No console errors on title → game → overload → LASTMA → end.
+- **Canvas fills the phone viewport height** (390×844 exact); desktop centres the portrait game
+  on a themed dusk-Lagos backdrop — no black bars.
+- Loop wired: tap stop (or `Space`) → bus pulls over itself → `OYA ENTER!` + coin burst →
+  `DROP! DROP!` on auto-alighting → cash counter pops.
+- Overload: bus visibly bulges, figures hang out of the door (1 at >6, 2 at >8, 3 at >10),
+  engine drops in pitch + chug slows, handling goes slack.
+- LASTMA gate every 25–35s, 3s warning banner, fine + strike + red flash + shake when over
+  capacity, 3 strikes ends the run; cash-out button unlocks at 40s.
+- 60fps headless after switching to Phaser's canvas renderer (WebGL/SwiftShader was ~8fps;
+  canvas runs ~60fps on the CPU-rendered box, which is also what makes the clip smooth).
+- `shots/` — mobile/desktop captures for every state (game, overload, LASTMA, title, end card).
 
-## Verification
+## Clip
 
-### Step 1 — core loop + scaling
-- `npm run build` clean (`tsc && vite build`).
-- Screenshots via headless Chromium at **390×844** and **1366×720**:
-  `shots/step1-core/step1-mobile.png`, `shots/step1-core/step1-desktop.png`.
-- Mobile canvas = 390×844, fills the viewport height exactly. Desktop canvas = 333×720,
-  centred on a dusk-Lagos CSS backdrop — no black bars.
+- `clip/danfo-clip.mp4` — **15.84s**, 780×1688 phone-format H.264, 25 fps, recorded on the
+  **deployed site** via Playwright (`?shot` flag) to show: title → TAP TO START → boarding →
+  coin burst → overloaded bus (8/6) → LASTMA AHEAD! → `FINED ₦1000!` → cash out → end card.
 
-### Step 2 — art pass
-- 24 hand-authored SVG sprite definitions (`src/art/svg.ts`, `src/art/svgCity.ts`),
-  rasterised at 2x and drawn at half scale; no image files anywhere.
-- Parallax: sky gradient (dusk→night over the run) + stars + skyline tile + road with
-  perspective lane dashes + pseudo-3D roadside buildings and billboards.
-- 390×844 mobile fills the viewport height; 1366×720 desktop centres on the backdrop.
-- Zero console errors.
-- `shots/step2-art/` — gameplay, overload (hanging passenger), LASTMA warning, title, end card.
+## Known limitations
 
-### Step 3 — traffic + checkpoints
-- Okada (lane-splitting), truck (wide, hard to pass), pothole (slow + jolt).
-- LASTMA gate every 25–35s, banner 3s ahead, fine + strike + shake when over capacity,
-  3 strikes ends the run.
-- `shots/step2-art/step2-lastma-mobile.png` shows the warning banner and the approaching gate.
+- Audio can't be verified headlessly; the synth graph was written to the WebAudio spec and
+  unlocked on the title tap.
+- The `?shot` flag exposes warp/fill hooks on the deployed build (invisible, harmless; used to
+  record deterministic screenshots and the clip).
+- 1.25MB bundle; Phaser is the biggest chunk. Fine for a jam; no code-splitting added (cut, not add).
 
-### Step 4 — juice + audio
-- WebAudio synth only (`src/game/AudioKit.ts`): continuous engine (sawtooth + sub +
-  filter through a low-pass, pitch and chug track the load), two-tone horn, coin
-  arpeggio, alight chime, collision thud, LASTMA fine, pass jingle.
-- Engine: unlocked on the title tap (user gesture); pitch drops as the bus fills up
-  and the chug rate follows speed.
-- `LAST CHANCE O!` callout when the conductor boards beyond capacity.
+## Blocked (needs the user)
 
-### Step 5 — PWA + end card
-- vite-plugin-pwa 2.0.0 (generateSW): service worker precaches the whole app,
-  `workbox.navigateFallback` + autoUpdate so it installs and runs fully offline.
-- Install manifest: DANFO icon set (192/512 + maskable) generated with Playwright.
-- localStorage best score in try/catch (`danfo.best.v1`, `danfo.runs.v1`).
-- End card now shows the tier title, naira total, route (`Ojuelegba → Mile 2`),
-  NEW BEST badge, strikes and a SHARE button (Web Share API, clipboard fallback).
-- Verified offline: `npm run preview` + headless check — SW registered, reload
-  while offline still boots the game.
+1. **X post** with `clip/danfo-clip.mp4` tagging `@loadoutprotocol` — no X credentials in this
+   environment. Draft is in `SUBMISSION.md`.
+2. **Form submission at app.loadout.xyz/jam** — no credentials in this environment, and the
+   deadline (Nov 6 2026, 15:00 UTC) has already passed. Submission pack is `SUBMISSION.md`.
+
+## What was NOT verified
+
+- Real-device (actual phone hardware) frame rate — headless-only testing on CPU rendering.
+- Form/X posting (blocked, above).
