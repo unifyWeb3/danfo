@@ -131,6 +131,7 @@ export class GameScene extends Phaser.Scene {
   private dragY = 0
   private dragDist = 0
   private pointerDown = false
+  private paletteCache = -1
 
   constructor() {
     super('Game')
@@ -338,6 +339,18 @@ export class GameScene extends Phaser.Scene {
 
   private updateSky(): void {
     const nightT = clamp(this.runTime / 62_000, 0, 1)
+    // the whole scene is static except for the palette, so cache it and only
+    // re-tessellate the vector layers when the colours actually move
+    if (Math.abs(nightT - this.paletteCache) < 0.005) {
+      this.sun.setY(lerp(140, HORIZON_Y - 4, nightT))
+      this.sun.setTint(mixColor(0xffe08a, 0xdfe7ff, nightT))
+      this.stars.setAlpha(nightT * 0.9)
+      this.skyline.setTint(mixColor(0xffffff, 0x6f7cc4, nightT))
+      this.skyline.tilePositionX = -this.travel * 42
+      this.stars.tilePositionX = -this.travel * 8
+      return
+    }
+    this.paletteCache = nightT
     const top = mixColor(DUSK.skyTop, NIGHT.skyTop, nightT)
     const mid = mixColor(DUSK.skyMid, NIGHT.skyMid, nightT)
     const low = mixColor(DUSK.skyLow, NIGHT.skyLow, nightT)
@@ -884,7 +897,7 @@ export class GameScene extends Phaser.Scene {
     for (let i = 0; i < n; i++) {
       this.passengers.push({ id: i, dest, tipMult: this.passengers.length >= CAPACITY ? 2 : 1 })
     }
-    this.cash += n * FARE_MAIN
+    this.cash += n * (FARE_BOARD + FARE_MAIN + TIP)
     bus.emit(EV.cash, this.cash)
     bus.emit(EV.pax, this.passengers.length, this.passengers.length > CAPACITY)
   }

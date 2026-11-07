@@ -8,7 +8,7 @@ import { HudScene } from './scenes/HudScene'
 import { EndScene } from './scenes/EndScene'
 
 const game = new Phaser.Game({
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   parent: 'game',
   width: W * DPR,
   height: H * DPR,
