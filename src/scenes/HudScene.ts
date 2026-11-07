@@ -161,7 +161,8 @@ export class HudScene extends Phaser.Scene {
     c.add([disc, horn, label])
     c.setSize(88, 88).setInteractive({ useHandCursor: true })
     c.on('pointerdown', () => {
-      bus.emit(EV.horn)
+      const game = this.scene.get('Game') as GameScene
+      game?.honk()
       this.tweens.add({ targets: c, scale: 0.9, duration: 80, yoyo: true })
     })
   }

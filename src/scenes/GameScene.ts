@@ -38,6 +38,7 @@ import { clamp, laneXAtZ, lerp, mixColor, roadHalfAtT, scaleAtZ, tAtZ, yAtZ } fr
 import { loadBest, saveBest, loadRuns, saveRuns } from '../game/storage'
 import { routeFor, titleFor } from '../game/routes'
 import { textStyle } from '../game/text'
+import { audio } from '../game/AudioKit'
 import { setupCamera } from '../game/camera'
 
 type Passenger = { id: number; dest: number; tipMult: number }
@@ -304,8 +305,8 @@ export class GameScene extends Phaser.Scene {
     this.lane = clamp(this.lane + dir, 0, 2)
   }
 
-  private honk(): void {
-    bus.emit(EV.horn)
+  public honk(): void {
+    audio.honk()
     this.callout('HONK!', 'info')
   }
 
@@ -316,6 +317,8 @@ export class GameScene extends Phaser.Scene {
     if (this.over) return
 
     this.runTime += dt * 1000
+    audio.setLoad(this.passengers.length)
+    audio.setSpeed(this.speed / BASE_SPEED)
     this.updateSky()
     this.updateSpeed(dt)
 
@@ -780,7 +783,10 @@ export class GameScene extends Phaser.Scene {
     bus.emit(EV.cash, this.cash)
     bus.emit(EV.pax, this.passengers.length, this.passengers.length > CAPACITY)
     this.coins.emitParticleAt(this.busX - 34, BUS_Y - 74, n * 5)
-    this.callout('OYA ENTER!', 'good')
+    audio.board()
+    audio.coin(n)
+    // the conductor shouting for one more fare
+    this.callout(this.passengers.length >= CAPACITY ? 'LAST CHANCE O!' : 'OYA ENTER!', 'good')
   }
 
   private alight(stop: StopObj): void {
@@ -793,6 +799,8 @@ export class GameScene extends Phaser.Scene {
     bus.emit(EV.cash, this.cash)
     bus.emit(EV.pax, this.passengers.length, this.passengers.length > CAPACITY)
     this.coins.emitParticleAt(this.busX + 34, BUS_Y - 74, leaving.length * 6)
+    audio.alight()
+    audio.coin(leaving.length + 1)
     this.callout('DROP! DROP!', 'good')
   }
 
@@ -800,6 +808,7 @@ export class GameScene extends Phaser.Scene {
     obj.hit = true
     this.slowTimer = 1.1
     this.cameras.main.shake(220, 0.008)
+    audio.jolt()
     if (obj.kind === 'okada') {
       const options = [0, 1, 2].filter((l) => Math.abs(l - obj.lane) > 0.6)
       obj.targetLane = options.length ? options[Math.floor(Math.random() * options.length)] : obj.lane
@@ -816,6 +825,7 @@ export class GameScene extends Phaser.Scene {
       this.strikes += 1
       this.cash = Math.max(0, this.cash - FINE)
       this.cameras.main.shake(420, 0.016)
+      audio.fine()
       bus.emit(EV.flash, 0xff2b2b, 0.55)
       bus.emit(EV.cash, this.cash)
       bus.emit(EV.strikes, this.strikes)
@@ -824,6 +834,7 @@ export class GameScene extends Phaser.Scene {
         this.time.delayedCall(900, () => this.endRun('caught'))
       }
     } else {
+      audio.pass()
       this.callout('LASTMA: E NO WAHALA', 'good')
     }
     this.nextCheckpointAt = this.runTime + CHECKPOINT_MIN + Math.random() * (CHECKPOINT_MAX - CHECKPOINT_MIN)
@@ -837,6 +848,7 @@ export class GameScene extends Phaser.Scene {
   private endRun(reason: 'caught' | 'cashout'): void {
     if (this.over) return
     this.over = true
+    audio.stopEngine()
     const bestBefore = loadBest()
     const isBest = this.cash > bestBefore
     if (isBest) saveBest(this.cash)
@@ -853,6 +865,7 @@ export class GameScene extends Phaser.Scene {
       isBest,
       runs,
     }
+    audio.gameOver(isBest)
     bus.emit(EV.end, summary)
     this.scene.stop('Hud')
     this.scene.start('End', summary)

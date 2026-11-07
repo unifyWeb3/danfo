@@ -3,6 +3,7 @@ import { FONT_DISPLAY, FONT_UI, H, TEX_SCALE, W } from '../config'
 import { loadBest } from '../game/storage'
 import { formatNaira } from '../game/routes'
 import { textStyle } from '../game/text'
+import { audio } from '../game/AudioKit'
 import { setupCamera } from '../game/camera'
 
 export class TitleScene extends Phaser.Scene {
@@ -99,6 +100,8 @@ export class TitleScene extends Phaser.Scene {
     })
 
     const go = () => {
+      audio.unlock()
+      audio.startEngine()
       this.cameras.main.fadeOut(220, 0, 0, 0)
       this.time.delayedCall(230, () => this.scene.start('Game'))
     }

@@ -16,7 +16,7 @@ appears. Greed vs. the fine.*
 | 1 | Core loop + scaling verified by screenshot | done | `feat: core loop and scaling` |
 | 2 | Art pass — hand-authored SVG sprite set, parallax, dusk→night | done | `feat: hand-authored svg art pass` |
 | 3 | Traffic + LASTMA checkpoints + strikes | done | `feat: traffic, potholes and lastma checkpoints` |
-| 4 | Juice + WebAudio (horn, engine, coins) | pending | |
+| 4 | Juice + WebAudio (horn, engine, coins) | done | `feat: webaudio synth, engine pitch, horn` |
 | 5 | PWA + shareable end card + localStorage best | pending | |
 | 6 | Deploy to Vercel + verify live URL on a phone viewport | pending | |
 | 7 | README (how-to + Now/Next/Later), gameplay clip, X post, jam submission | pending | |
@@ -60,3 +60,11 @@ appears. Greed vs. the fine.*
 - LASTMA gate every 25–35s, banner 3s ahead, fine + strike + shake when over capacity,
   3 strikes ends the run.
 - `shots/step2-art/step2-lastma-mobile.png` shows the warning banner and the approaching gate.
+
+### Step 4 — juice + audio
+- WebAudio synth only (`src/game/AudioKit.ts`): continuous engine (sawtooth + sub +
+  filter through a low-pass, pitch and chug track the load), two-tone horn, coin
+  arpeggio, alight chime, collision thud, LASTMA fine, pass jingle.
+- Engine: unlocked on the title tap (user gesture); pitch drops as the bus fills up
+  and the chug rate follows speed.
+- `LAST CHANCE O!` callout when the conductor boards beyond capacity.
