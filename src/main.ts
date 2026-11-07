@@ -28,7 +28,10 @@ const game = new Phaser.Game({
 
 export default game
 
-if (import.meta.env.DEV) {
+// invisible `?shot` flag used for screenshots and the gameplay clip; playtesters
+// see nothing different, it just exposes the same hooks the dev build uses
+const shotMode = import.meta.env.DEV || new URLSearchParams(window.location.search).has('shot')
+if (shotMode) {
   ;(window as unknown as Record<string, unknown>).__danfo = {
     game,
     start: () => game.scene.getScene('Title')?.scene.start('Game'),

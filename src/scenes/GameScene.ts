@@ -187,7 +187,7 @@ export class GameScene extends Phaser.Scene {
     this.bindInput()
     this.cameras.main.fadeIn(260, 0, 0, 0)
 
-    if (import.meta.env.DEV) {
+    if (import.meta.env.DEV || new URLSearchParams(window.location.search).has('shot')) {
       ;(window as unknown as Record<string, unknown>).__danfoGame = {
         fill: (n: number) => this.debugFill(n),
         stopScreenPos: () => this.debugStopPos(),
